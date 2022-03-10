@@ -19,7 +19,7 @@ namespace MediaInfo
 {
     static class MediaInformation
     {
-        public static string MediaInfoPath =@"G:\SubtitleBotPlugins\MediaInfo.Windows.x64";
+        public static string MediaInfoPath =@"C:\SubtitleBotPlugins\MediaInfo.Windows.x64";
 
 
 

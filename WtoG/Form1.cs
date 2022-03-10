@@ -21,13 +21,15 @@ namespace WtoG
     {
 
         HtmlAgilityPack.HtmlDocument document;
+
+        public static bool  SelectedFile = false;
         int PostId = 0;
         string PublicPath;
         string DlFolderPath;
         List<string> Waitingline = new List<string>();
         System.Windows.Forms.Timer timer;
         List<string> FilesToDelete = new List<string>();
-
+     
       public static Form1 AForm;
         public Form1()
         {
@@ -43,6 +45,7 @@ namespace WtoG
             //Trainbit();
             FormLoadGap();
            UploadManager.MyForm = this;
+            
         }
 
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -83,6 +86,8 @@ namespace WtoG
         {
             e.Handled = true;
             e.Continue(PublicPath);
+
+            SelectedFile = true;
         }
         private void button3_Click(object sender, EventArgs e)
         {
@@ -216,13 +221,37 @@ namespace WtoG
               // webControl2.WebView.SendMouseEvent(MouseEventType.Click, new MouseEventArgs(MouseButtons.Left, 1, x, y, 0));
              */
             webControl2.WebView.SendMouseEvent(MouseEventType.Click, new MouseEventArgs(MouseButtons.Left, 1, 19, 173, 0));
-            
-            System.Threading.Timer timer = new System.Threading.Timer(delegate (object stateInfo)
-            {
-                var s = webControl2.WebView.EvalScript("var send = document.querySelector('[class=\"btn btn-primary\"]');send.click(); var sendpos = send.getBoundingClientRect();");
-               
-            }, null, 0, 500);
+            //while (!SelectedFile)
+            //{
 
+            ////}
+            //System.Threading.Timer timer = new System.Threading.Timer(delegate (object stateInfo)
+            //{
+            //    var s = webControl2.WebView.EvalScript("var send = document.querySelector('[class=\"btn btn-primary\"]');send.click(); var sendpos = send.getBoundingClientRect();");
+               
+            //}, null, 0, 500);
+
+            System.Threading.Timer timer1 = new System.Threading.Timer(delegate (object stateInfo)
+            {
+                var s = webControl2.WebView.EvalScript("var send = document.querySelector('[class=\"btn btn-primary\"]');send.click();");
+
+            }, null, 0, 500);
+            wait(500);
+            //  Thread.Sleep(500);
+            System.Threading.Timer timer2 = new System.Threading.Timer(delegate (object stateInfo)
+            {
+                var s = webControl2.WebView.EvalScript("send.click();");
+
+            }, null, 0, 500);
+            wait(500);
+            //   Thread.Sleep(500);
+            System.Threading.Timer timer3 = new System.Threading.Timer(delegate (object stateInfo)
+            {
+                var s = webControl2.WebView.EvalScript("var sendpos = send.getBoundingClientRect();");
+
+            }, null, 0, 500);
+            wait(500);
+            //SelectedFile = false;
             // var s = webControl2.WebView.EvalScript("var send = document.querySelector('[class=\"btn btn-primary\"]');send.click(); var sendpos = send.getBoundingClientRect();");
 
 
@@ -233,10 +262,31 @@ namespace WtoG
 
 
             //After UploadFile Check To Uploaded
-          //  CheckToUpload(FileName);
-
+            //  CheckToUpload(FileName);
+            //Thread.Sleep(1500);
         }
+        public void wait(int milliseconds)
+        {
+            var timer1 = new System.Windows.Forms.Timer();
+            if (milliseconds == 0 || milliseconds < 0) return;
 
+            // Console.WriteLine("start wait timer");
+            timer1.Interval = milliseconds;
+            timer1.Enabled = true;
+            timer1.Start();
+
+            timer1.Tick += (s, e) =>
+            {
+                timer1.Enabled = false;
+                timer1.Stop();
+                // Console.WriteLine("stop wait timer");
+            };
+
+            while (timer1.Enabled)
+            {
+                Application.DoEvents();
+            }
+        }
         void CheckToUpload(string Name)
         {
             Waitingline.Add(Name);
@@ -518,15 +568,19 @@ namespace WtoG
             //UploadFile(@"G:\SubtitleBotPlugins\OutPutFolder\Arcane.S01E01.480p.WEB-DL.Sub.WebDL-.DeltaMovieS.mkv", "test.mkv");
             List<Link> links = new List<Link>();
             links = DownloadManager.GetLinksFromText();
+            
             bool test = links.AddToQueu();
 
-            
+
+            MessageBox.Show("Finished All Files Remove DownloadLink Txt File And Replace With NewLinks ");
 
 
 
         }
 
         public bool Uploaded(string MoveName,ref string GapLink) {
+
+
 
 
             string AddressTxt = "http://deltagap.ir/DeltaMoviesBot/lastFile.txt";
@@ -537,7 +591,10 @@ namespace WtoG
 
 
             string SIZEmb;
-            //  MessageBox.Show(LINK);
+
+            wait(500);
+      
+            
             while (NAME != MoveName)
             {
                  TextFile = Get(AddressTxt);
@@ -545,7 +602,8 @@ namespace WtoG
                  LINK = DATA[0];
                 NAME = DATA[1];
                 SIZEmb = DATA[2];
-                Thread.Sleep(3000);
+                //   MessageBox.Show(LINK);
+              wait(5000);
 
             }
             

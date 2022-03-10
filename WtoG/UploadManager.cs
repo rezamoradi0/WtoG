@@ -12,7 +12,7 @@ using System.Windows.Forms.VisualStyles;
 using System.Windows.Forms.ComponentModel;
 namespace WtoG
 {
-    static class UploadManager
+  public  static class UploadManager
     {
        public static Form1 MyForm = null;
         static string UploadPathUrl = "ftp://asiatech.parsaspace.com:21/";

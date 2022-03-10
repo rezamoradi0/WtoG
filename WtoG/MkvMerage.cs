@@ -10,10 +10,10 @@ namespace MediaInfo
 {
     public static class MkvMerage
     {
-        static string MkvMeragePath = "G:/SubtitleBotPlugins\\mkvtoolnix\\mkvmerge.exe";
-        static string CoverFullPath = "G:\\SubtitleBotPlugins\\cover.jpg";
-        static string MkvMerageFolder = @"G:\SubtitleBotPlugins\mkvtoolnix";
-        static string MKVCommandTxt = @"G:\SubtitleBotPlugins\MKVCMD.txt";
+        static string MkvMeragePath = "C:/SubtitleBotPlugins\\mkvtoolnix\\mkvmerge.exe";
+        static string CoverFullPath = "C:\\SubtitleBotPlugins\\cover.jpg";
+        static string MkvMerageFolder = @"C:\SubtitleBotPlugins\mkvtoolnix";
+        static string MKVCommandTxt = @"C:\SubtitleBotPlugins\MKVCMD.txt";
 
         public static bool SoftSobMovieBatch(this List<MovieFile> Movies)
         {

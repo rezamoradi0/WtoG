@@ -7,12 +7,13 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Chilkat;
 
+
 namespace MediaInfo
 {
     internal class DeltaSubtitle
     {
 
-        const string DeltaSubPath = @"G:\SubtitleBotPlugins\DeltaSub.srt";
+        const string DeltaSubPath = @"C:\SubtitleBotPlugins\DeltaSub.srt";
 
         public  bool SubtitleDeltaBatch(List<MovieFile> Movies)
         {
@@ -353,9 +354,9 @@ namespace MediaInfo
 
               
             }
-
+            output1 = output1.Replace("MetalMovieS", "DeltaMovieS");
             output1 = output1.Replace("MetalMovies", "DeltaMovieS");
-
+            
             string[] outPutArray = output1.Split('~');
             return outPutArray;
 

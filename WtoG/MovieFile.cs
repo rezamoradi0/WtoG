@@ -132,8 +132,8 @@ namespace MediaInfo
         public SubtitleFile GetBestSubtitle() {
             if (Subtitles.Count == 0)
             {
-                Console.WriteLine("No Subtitle For : {0}", MovieName);
-                Console.ReadLine();
+             //   Console.WriteLine("No Subtitle For : {0}", MovieName);
+               // Console.ReadLine();
                 return null;
             }
             else if (Subtitles.Count == 1)
