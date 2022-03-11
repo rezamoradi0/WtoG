@@ -22,19 +22,19 @@ namespace WtoG
 
         HtmlAgilityPack.HtmlDocument document;
 
-        public static bool  SelectedFile = false;
+        public static bool SelectedFile = false;
         int PostId = 0;
         string PublicPath;
         string DlFolderPath;
         List<string> Waitingline = new List<string>();
         System.Windows.Forms.Timer timer;
         List<string> FilesToDelete = new List<string>();
-     
-      public static Form1 AForm;
+
+        public static Form1 AForm;
         public Form1()
         {
             InitializeComponent();
-          
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -44,8 +44,8 @@ namespace WtoG
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             //Trainbit();
             FormLoadGap();
-           UploadManager.MyForm = this;
-            
+            UploadManager.MyForm = this;
+
         }
 
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -73,12 +73,12 @@ namespace WtoG
         }
         void FormLoadGap()
         {
-          //  timer = new System.Windows.Forms.Timer();
-         //   timer.Tick += timer_Tick;
-        //    timer.Interval = 1000;
-         //   timer.Enabled = true;
-         //   timer.Start();
-            webControl2.WebView.FileDialog +=WebView_FileDialog;
+            //  timer = new System.Windows.Forms.Timer();
+            //   timer.Tick += timer_Tick;
+            //    timer.Interval = 1000;
+            //   timer.Enabled = true;
+            //   timer.Start();
+            webControl2.WebView.FileDialog += WebView_FileDialog;
             webControl2.WebView.Url = "https://web.gap.im/#/im?p=%40deltamoviesbot";
 
         }
@@ -134,7 +134,7 @@ namespace WtoG
         public void ReciviveLink(string LinkToDownload, string UserId)
         {
             //DownloadFile
-            new Thread(delegate()
+            new Thread(delegate ()
             {
 
                 DownloadFile(LinkToDownload);
@@ -179,7 +179,7 @@ namespace WtoG
         {
             label8.Text = e.ProgressPercentage + "";
         }
-     public  void UploadFile(string Path, string FileName)
+        public void UploadFile(string Path, string FileName)
         {
             PublicPath = Path;
 
@@ -220,7 +220,7 @@ namespace WtoG
                //var x = int.Parse(webControl1.WebView.EvalScript("pos.x").ToString().Split('.')[0]);
               // webControl2.WebView.SendMouseEvent(MouseEventType.Click, new MouseEventArgs(MouseButtons.Left, 1, x, y, 0));
              */
-            webControl2.WebView.SendMouseEvent(MouseEventType.Click, new MouseEventArgs(MouseButtons.Left, 1, 19, 173, 0));
+          //  webControl2.WebView.SendMouseEvent(MouseEventType.Click, new MouseEventArgs(MouseButtons.Left, 1, 19, 173, 0));
             wait(1000);
             webControl2.WebView.SendMouseEvent(MouseEventType.Click, new MouseEventArgs(MouseButtons.Left, 1, 19, 173, 0));
             //while (!SelectedFile)
@@ -245,8 +245,8 @@ namespace WtoG
                 var s = webControl2.WebView.EvalScript("send.click();");
 
             }, null, 0, 500);
-          
-            
+
+
             wait(500);
             //   Thread.Sleep(500);
             System.Threading.Timer timer3 = new System.Threading.Timer(delegate (object stateInfo)
@@ -299,7 +299,7 @@ namespace WtoG
 
         void timer_Tick(object sender, EventArgs e)
         {
-          //  CheckingUpload();
+            //  CheckingUpload();
         }
         void CheckingUpload()
         {
@@ -572,7 +572,7 @@ namespace WtoG
             //UploadFile(@"G:\SubtitleBotPlugins\OutPutFolder\Arcane.S01E01.480p.WEB-DL.Sub.WebDL-.DeltaMovieS.mkv", "test.mkv");
             List<Link> links = new List<Link>();
             links = DownloadManager.GetLinksFromText();
-            
+
             bool test = links.AddToQueu();
 
 
@@ -582,7 +582,8 @@ namespace WtoG
 
         }
 
-        public bool Uploaded(string MoveName,ref string GapLink) {
+        public bool Uploaded(string MoveName, ref string GapLink)
+        {
 
 
 
@@ -590,31 +591,31 @@ namespace WtoG
             string AddressTxt = "http://deltagap.ir/DeltaMoviesBot/lastFile.txt";
             string TextFile;
             string[] DATA;
-            string LINK="";
+            string LINK = "";
             string NAME = "";
 
 
             string SIZEmb;
 
             wait(500);
-      
-            
+
+
             while (NAME != MoveName)
             {
-                 TextFile = Get(AddressTxt);
-               DATA = TextFile.Split(',');
-                 LINK = DATA[0];
+                TextFile = Get(AddressTxt);
+                DATA = TextFile.Split(',');
+                LINK = DATA[0];
                 NAME = DATA[1];
                 SIZEmb = DATA[2];
                 //   MessageBox.Show(LINK);
-              wait(5000);
+                wait(5000);
 
             }
-            
-                GapLink = LINK;
-            
-                return true;
-            
+
+            GapLink = LINK;
+
+            return true;
+
 
 
             return false;
@@ -636,7 +637,7 @@ namespace WtoG
             }
         }
 
-      
+
 
     }
 }

@@ -120,6 +120,8 @@ namespace MediaInfo
             MovieName = MovieName.Replace("DeltaMovies", "");
             MovieName = MovieName.Replace(".mkv", ".DeltaMovieS.mkv");
             MovieName = MovieName.Replace(".-.", ".");
+            MovieName = MovieName.Replace("-.", "-");
+
             return MovieName;
 
         }
