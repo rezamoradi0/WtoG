@@ -16,12 +16,12 @@ namespace MediaInfo
 
         public static string SubtitleSaveFolder = @"C:\SubtitleBotPlugins\AllSubtitle\";
         public string MovieName { get; set; }
-   //     public int MovieLength { get; set; }
+        //     public int MovieLength { get; set; }
         public int MovieFileLength { get; set; }
         public float MovieSize { get; set; }
 
         public string MovieUploadPath { get; set; }
-
+        public string MovieOutPathMkv { get; set; }
         public IMDBInfo IMDBInfo { get; set; }
         public static string LastMovieName { get; set; }
         public static string LastIMDBID { get; set; }
@@ -41,6 +41,7 @@ namespace MediaInfo
         }
         public  string CreateOutPutPath() {
             string output = OutPutMovieFolder+ ReplaceName(MovieName);
+            MovieOutPathMkv = output;
             return output;
 
 

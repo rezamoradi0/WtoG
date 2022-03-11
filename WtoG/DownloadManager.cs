@@ -13,7 +13,7 @@ namespace MediaInfo
     public static class DownloadManager
     {
 
-        public static int QueuCount = 8;
+        public static int QueuCount = 5;
        public static bool InProgress = false;
         public static string IDMPath = @"C:\Program Files (x86)\Internet Download Manager\";
       public  static string DonwloadLinksTxt = @"C:\SubtitleBotPlugins\DownloadLinks.txt";
@@ -89,6 +89,7 @@ namespace MediaInfo
                     AllLink.RemoveAt(0);
                     UploadManager.MyForm.wait(3000);
                     //  Task.Delay(3000);
+                    i++;
                 }
                 else {
                     string WrongUrl=AllLink[0].Url;
@@ -100,7 +101,7 @@ namespace MediaInfo
                     AllLink.RemoveAt(0);
                 }
 
-                if (i== QueuCount -1|| i== allLinkNum-1)
+                if (i== QueuCount|| i== allLinkNum)
                 {
                     
                   
@@ -125,7 +126,7 @@ namespace MediaInfo
                       i = 0;
                 }
                // Console.WriteLine(i);
-                i++;
+               // i++;
             }
             return true;
 
@@ -185,23 +186,33 @@ namespace MediaInfo
 
         public static int GetFileSize(string _url)
         {
-           // return 1;
-            string url = _url.Replace("https", "http");
-            long result = -1;
 
-            System.Net.WebRequest req = System.Net.WebRequest.Create(url);
-           
-            req.Method = "HEAD";
-            using (System.Net.WebResponse resp = req.GetResponse())
+            try
             {
-                if (long.TryParse(resp.Headers.Get("Content-Length"), out long ContentLength))
-                {
-                    result = ContentLength/1024;
-                    result = result / 1024;
-                }
-            }
+                // return 1;
+                string url = _url.Replace("https", "http");
+                long result = -1;
 
-            return Convert.ToInt32( result);
+                System.Net.WebRequest req = System.Net.WebRequest.Create(url);
+
+                req.Method = "HEAD";
+                using (System.Net.WebResponse resp = req.GetResponse())
+                {
+                    if (long.TryParse(resp.Headers.Get("Content-Length"), out long ContentLength))
+                    {
+                        result = ContentLength / 1024;
+                        result = result / 1024;
+                    }
+                }
+
+                return Convert.ToInt32(result);
+            }
+            catch (Exception)
+            {
+
+                return 1500;
+            }
+           
         }
     }
 }

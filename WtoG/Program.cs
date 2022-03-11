@@ -40,7 +40,7 @@ namespace WtoG
 
             FielsWorks.DeleteAllFiles();
             DownloadManager.InProgress = false;
-            Console.ReadLine();
+        //    Console.ReadLine();
 
         }
 

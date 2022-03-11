@@ -60,7 +60,7 @@ namespace MediaInfo
             Command = Command.Replace("ORGINIALPATHANDFILENAME", InPutPath);
             Command = Command.Replace("COVERPATHANDNAME", CoverFullPath);
 
-            Console.WriteLine(Command);
+           // Console.WriteLine(Command);
            // Console.ReadLine();
             return Command;
         }

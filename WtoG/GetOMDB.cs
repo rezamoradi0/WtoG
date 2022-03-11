@@ -16,13 +16,17 @@ namespace MediaInfo
         static string ApiCommand = "https://www.omdbapi.com/?apikey=APITOKEN&i=IMDBID&plot=full";
         public static string ApiId() {
             int temp = UsedApi;
-            if (UsedApi>=AllApi.Length)
+            if (UsedApi >= AllApi.Length)
             {
                 UsedApi = 0;
+                temp = UsedApi;
             }
-            UsedApi++;
+            else {
+                UsedApi++;
+            }
+            
 
-            return AllApi[UsedApi];
+            return AllApi[temp];
 
 
         }
@@ -38,8 +42,11 @@ namespace MediaInfo
             iMDBInfo.Released = stuff.Released;
             iMDBInfo.Genre = stuff.Genre;
             iMDBInfo.Director = stuff.Director;
+            iMDBInfo.Director = iMDBInfo.Director.Replace("'", "");
             iMDBInfo.Writer = stuff.Writer;
+            iMDBInfo.Writer= iMDBInfo.Writer.Replace("'", "");
             iMDBInfo.Actors = stuff.Actors;
+            iMDBInfo.Actors = iMDBInfo.Actors.Replace("'", "");
             iMDBInfo.Plot = stuff.Plot;
             iMDBInfo.Language = stuff.Language;
             iMDBInfo.Country = stuff.Country;

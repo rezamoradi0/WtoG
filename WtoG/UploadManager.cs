@@ -38,7 +38,7 @@ namespace WtoG
 
 
             }
-            if (file.GetFileType() == "Serial")
+           else if (file.GetFileType() == "Serial")
             {
                 string EpisodeuploadPath =CreateSeriesPath(file);
                 string M = UploadFile(file,MovieFile.MovieFolder + file.MovieName, UploadPathUrl + EpisodeuploadPath + file.MovieName);
@@ -147,16 +147,22 @@ namespace WtoG
           
 
 
+          
 
+            string FileNameFull = file.MovieOutPathMkv.Remove(0, file.MovieOutPathMkv.LastIndexOf('\\')+1);
+            //    MessageBox.Show(FileNameFull);
 
-            string FileNameFull = filePath.Remove(0,filePath.LastIndexOf('\\')+1);
-        //    MessageBox.Show(FileNameFull);
-            MyForm.UploadFile(filePath, file.GetFileName());
+            //   MyForm.UploadFile(filePath, file.GetFileName());
+          //  MessageBox.Show(file.MovieOutPathMkv);
+          //  Clipboard.SetText(file.MovieOutPathMkv);
+           // MessageBox.Show(FileNameFull);
+        //    Clipboard.SetText(FileNameFull);
+            MyForm.UploadFile(file.MovieOutPathMkv, FileNameFull);
             string _GAPLINK = "";
             MyForm.Uploaded(FileNameFull, ref _GAPLINK);
-          
-              
 
+
+          //  MessageBox.Show(FileNameFull+"Test");
             /*
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(UploadPath);
             request.Credentials = new NetworkCredential(FtpUser, FtpPass);

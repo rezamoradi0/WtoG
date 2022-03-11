@@ -182,8 +182,8 @@ namespace WtoG
      public  void UploadFile(string Path, string FileName)
         {
             PublicPath = Path;
-           
-           
+
+
 
             /*   webControl2.WebView.EvalScript("var target = document.querySelectorAll('[class=\"icon-attachment\"]')[1];var pos = target.getBoundingClientRect();");
                string a = @"var getAbsPosition = function(el){
@@ -221,6 +221,8 @@ namespace WtoG
               // webControl2.WebView.SendMouseEvent(MouseEventType.Click, new MouseEventArgs(MouseButtons.Left, 1, x, y, 0));
              */
             webControl2.WebView.SendMouseEvent(MouseEventType.Click, new MouseEventArgs(MouseButtons.Left, 1, 19, 173, 0));
+            wait(1000);
+            webControl2.WebView.SendMouseEvent(MouseEventType.Click, new MouseEventArgs(MouseButtons.Left, 1, 19, 173, 0));
             //while (!SelectedFile)
             //{
 
@@ -228,12 +230,12 @@ namespace WtoG
             //System.Threading.Timer timer = new System.Threading.Timer(delegate (object stateInfo)
             //{
             //    var s = webControl2.WebView.EvalScript("var send = document.querySelector('[class=\"btn btn-primary\"]');send.click(); var sendpos = send.getBoundingClientRect();");
-               
-            //}, null, 0, 500);
 
+            //}, null, 0, 500);
+            wait(500);
             System.Threading.Timer timer1 = new System.Threading.Timer(delegate (object stateInfo)
             {
-                var s = webControl2.WebView.EvalScript("var send = document.querySelector('[class=\"btn btn-primary\"]');send.click();");
+                var s = webControl2.WebView.EvalScript("var send = document.querySelector('[class=\"btn btn-primary\"]'); send.click();");
 
             }, null, 0, 500);
             wait(500);
@@ -243,6 +245,8 @@ namespace WtoG
                 var s = webControl2.WebView.EvalScript("send.click();");
 
             }, null, 0, 500);
+          
+            
             wait(500);
             //   Thread.Sleep(500);
             System.Threading.Timer timer3 = new System.Threading.Timer(delegate (object stateInfo)
