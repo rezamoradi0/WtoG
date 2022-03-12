@@ -28,9 +28,14 @@ namespace WtoG
             List<MovieFile> files = new List<MovieFile>();
             files = FielsWorks.GetMovies();
             SubtitleEdit.SubRipBatch(files);
+         //   MessageBox.Show("Subrip Passed next DeltaSub");
             DS.SubtitleDeltaBatch(files);
+         //   MessageBox.Show("DeltaSub Passed next MediaInformation");
             MediaInformation.GetDurationBatch(files);
+         //  MessageBox.Show("MediaInformation Passed next SoftSobMovieBatch");
             files.SoftSobMovieBatch();
+         //   MessageBox.Show("SoftSobMovieBatch Passed next MoveSubtitlesBatch");
+
             files.MoveSubtitlesBatch();
             files.CreateUploadBatch();
             files._InsertMovieBatch();

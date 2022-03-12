@@ -69,7 +69,7 @@ namespace WtoG
         }
         void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            MessageBox.Show(e.Exception.Message, "\n\n" + GetLineNumber(e.Exception));
+            MessageBox.Show(e.Exception.Message, "\n\n" + GetLineNumber(e.Exception)+" "+e.ToString());
         }
         void FormLoadGap()
         {
@@ -602,11 +602,20 @@ namespace WtoG
 
             while (NAME != MoveName)
             {
-                TextFile = Get(AddressTxt);
-                DATA = TextFile.Split(',');
-                LINK = DATA[0];
-                NAME = DATA[1];
-                SIZEmb = DATA[2];
+                try
+                {
+                    TextFile = Get(AddressTxt);
+                    DATA = TextFile.Split(',');
+                    LINK = DATA[0];
+                    NAME = DATA[1];
+                    SIZEmb = DATA[2];
+                }
+                catch (Exception)
+                {
+
+                  
+                }
+    
                 //   MessageBox.Show(LINK);
                 wait(5000);
 
@@ -622,19 +631,39 @@ namespace WtoG
         }
         public static string Get(string uri)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            request.UseDefaultCredentials = true;
-            request.PreAuthenticate = true;
-            request.Credentials = CredentialCache.DefaultCredentials;
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
+            try
             {
-                return reader.ReadToEnd();
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                request.UseDefaultCredentials = true;
+                request.PreAuthenticate = true;
+                request.Credentials = CredentialCache.DefaultCredentials;
+                request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+                /*request.KeepAlive = false;
+                request.Timeout = 50000;
+                request.ServicePoint.ConnectionLeaseTimeout = 50000;
+                request.ServicePoint.MaxIdleTime = 50000;
+                */
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string webText = reader.ReadToEnd();
+                    if (webText.Length > 5)
+                    {
+                        return webText;
+                    }
+                    else
+                        return "No,th,ing";
+
+                }
             }
+            catch (Exception)
+            {
+
+              return  "No,th,ing";
+            }
+            
         }
 
 

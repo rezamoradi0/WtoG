@@ -135,8 +135,9 @@ namespace MediaInfo
         public SubtitleFile GetBestSubtitle() {
             if (Subtitles.Count == 0)
             {
-             //   Console.WriteLine("No Subtitle For : {0}", MovieName);
-               // Console.ReadLine();
+                System.Windows.Forms.MessageBox.Show("This Have Not Sub"+MovieName);
+                //   Console.WriteLine("No Subtitle For : {0}", MovieName);
+                // Console.ReadLine();
                 return null;
             }
             else if (Subtitles.Count == 1)
@@ -147,26 +148,63 @@ namespace MediaInfo
           SubtitleFile subtitleFile = new SubtitleFile();
                 foreach (var Sub in Subtitles)
                 {
-                    if (Sub.Format==".srt"&&Sub.Languge=="per")
+                    if (Sub.Format == ".srt" && Sub.Languge == "per")
                     {
-                        subtitleFile=Sub;
+                        subtitleFile = Sub;
                         ChosedSubtitle = Sub;
                         return Sub;
                         break;
-                    }else if (Sub.Format == ".srt" && Sub.Languge != "eng")
+
+
+                    }
+                }
+
+                foreach (var Sub in Subtitles)
+                {
+
+                    if (Sub.Format == ".srt" && Sub.Languge != "eng")
                     {
-                        if (subtitleFile.Languge!= "per")
-                        {
+                        
                             subtitleFile = Sub;
                             ChosedSubtitle = Sub;
                             return Sub;
                             break;
-                        }
+                        
                       
-                    }
 
+                    }
+                }
+                foreach (var Sub in Subtitles)
+                {
+
+                    if (Sub.Format == ".srt" && Sub.Languge == "eng")
+                    {
+
+                        subtitleFile = Sub;
+                        ChosedSubtitle = Sub;
+                        return Sub;
+                        break;
+
+
+
+                    }
+                }
+                foreach (var Sub in Subtitles)
+                {
+
+                    
+                        subtitleFile = Sub;
+                        ChosedSubtitle = Sub;
+                        return Sub;
+                        break;
+
+
+
+                    
                 }
                 ChosedSubtitle = subtitleFile;
+
+             //   System.Windows.Forms.MessageBox.Show(subtitleFile.SubtitlePath + "  " + subtitleFile.Format+"  "+ subtitleFile.Languge);
                 return subtitleFile;
 
             }

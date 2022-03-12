@@ -34,6 +34,8 @@ namespace MediaInfo
         /// <returns> Finshed را به عنوان پایان کار بازمیگرداند </returns>
         public string Subtitle(SubtitleFile Subtitle)
         {
+
+          //  System.Windows.Forms.MessageBox.Show(Subtitle.SubtitlePath);
             string[] subtitleLines = File.ReadAllLines(Subtitle.SubtitlePath);
             string[] EditedSubtitle = DeltaSub(subtitleLines);
             string Save_Path = Set_Path(Subtitle.SubtitlePath);

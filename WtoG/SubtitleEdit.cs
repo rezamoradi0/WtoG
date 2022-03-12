@@ -38,7 +38,7 @@ namespace MediaInfo
 
             foreach (var item in Lines)
             {
-                Console.WriteLine("this is a item "+item);
+              //  System.Windows.Forms.MessageBox.Show("this is a item "+item);
                
                 int indexOf1 = item.IndexOf(": ");
                 string temp = "";
@@ -62,8 +62,10 @@ namespace MediaInfo
                     if (item.Contains(".mkv"))
                     {
 
+                        SubtitleFile Sub = RippedSubtiteName(item);
 
-                        Movies[MovieIndex - 1].Subtitles.Add(RippedSubtiteName(item));
+
+                        Movies[MovieIndex - 1].Subtitles.Add(Sub); ;;
                     }
                 }
                
@@ -79,7 +81,7 @@ namespace MediaInfo
        public static SubtitleFile RippedSubtiteName(string LineInfo) {
 
             SubtitleFile Subtitle=new SubtitleFile();
-          
+
             if (LineInfo.Contains(".per."))
             {
                 Subtitle.Languge = "per";
@@ -89,9 +91,12 @@ namespace MediaInfo
             {
                 Subtitle.Languge = "und";
             }
-           else if (LineInfo.Contains(".eng."))
+            else if (LineInfo.Contains(".eng."))
             {
                 Subtitle.Languge = "eng";
+            }
+            else {
+                Subtitle.Languge = "und";
             }
             int IndexOFArrow = LineInfo.IndexOf(" -> ");
             string SubPath=LineInfo.Remove(0,IndexOFArrow+4);
@@ -106,7 +111,7 @@ namespace MediaInfo
             {
                 Subtitle.Format = "und";
             }
-          
+          //  System.Windows.Forms.MessageBox.Show("Subtitle.SubtitlePath = " + SubPath);
             Subtitle.SubtitlePath = SubPath;
 
            
