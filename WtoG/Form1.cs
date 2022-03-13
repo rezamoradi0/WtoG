@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MediaInfo;
+using Chilkat;
 
 namespace WtoG
 {
@@ -21,31 +22,43 @@ namespace WtoG
     {
 
         HtmlAgilityPack.HtmlDocument document;
-
+        public static int UploadedReqs = 0;
         public static bool SelectedFile = false;
         int PostId = 0;
-        string PublicPath;
+      public  string PublicPath;
         string DlFolderPath;
         List<string> Waitingline = new List<string>();
         System.Windows.Forms.Timer timer;
         List<string> FilesToDelete = new List<string>();
-
+        public static bool finishedWork;
         public static Form1 AForm;
         public Form1()
         {
             InitializeComponent();
-
+            CheckForIllegalCrossThreadCalls = false;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //Web Browser Commented
+          /*
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             Application.ThreadException += Application_ThreadException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             //Trainbit();
             FormLoadGap();
-            UploadManager.MyForm = this;
 
+            */
+            //UI 
+            UploadManager.MyForm = this;
+            UploadManager.MyProgress = this.progressBar1;
+            UploadManager.FTPPerOne = this.FtpPerOne;
+
+            DownloadManager.AddedLinksLabel = AddedLinksLabel;
+            DownloadManager.ThisQueueCount = label12;
+            DownloadManager.ThisQueueProgress = progressBar2;
+            DownloadManager.AllLinksProgress = progressBar3;
+            DownloadManager.QueueCountLabel = QueueCountLabel;
         }
 
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -78,6 +91,7 @@ namespace WtoG
             //    timer.Interval = 1000;
             //   timer.Enabled = true;
             //   timer.Start();
+            
             webControl2.WebView.FileDialog += WebView_FileDialog;
             webControl2.WebView.Url = "https://web.gap.im/#/im?p=%40deltamoviesbot";
 
@@ -567,28 +581,76 @@ namespace WtoG
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private async void button4_Click(object sender, EventArgs e)
         {
+            button4.Enabled = false;
             //UploadFile(@"G:\SubtitleBotPlugins\OutPutFolder\Arcane.S01E01.480p.WEB-DL.Sub.WebDL-.DeltaMovieS.mkv", "test.mkv");
             List<Link> links = new List<Link>();
+
             links = DownloadManager.GetLinksFromText();
+            AllLinksLabel.Text = links.Count.ToString();
+            progressBar3.Maximum = links.Count;
+            MessageBox.Show("Realy Start ? ");
+            timer1.Start();
+            
+       
+            Thread MyMainThread = new Thread(() => {
+                finishedWork = links.AddToQueu();
+                MessageBox.Show("Finished !");
+                timer1.Stop();
+            }
+            
+            );
+            MyMainThread.Start();
+            timer1.Tick += Timer1_Tick;
+          
+            // bool test = links.AddToQueu();
 
-            bool test = links.AddToQueu();
-
-
-            MessageBox.Show("Finished All Files Remove DownloadLink Txt File And Replace With NewLinks ");
-
+            button4.Enabled = true;
 
 
         }
 
+        static int secend = 0;
+        static int min = 0;
+        static int hour = 0;
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            secend++;
+            int mysecends = secend / 10;
+            if (mysecends > 3600)
+            {
+                hour = mysecends / 3600;
+                int addtionSecend = mysecends % 3600;
+
+                min = addtionSecend / 60;
+                int lastSecends = addtionSecend % 60;
+                TimerLabel.Text = $"{hour}  : Hour ,{min}  :Min , {lastSecends} :Sec";
+            }
+            else if (mysecends > 60) {
+                min = mysecends / 60;
+                int lastSecends = mysecends % 60;
+                TimerLabel.Text = $"{hour}  : Hour ,{min}  :Min , {lastSecends} :Sec";
+
+
+            }
+            else
+            {
+
+                TimerLabel.Text = $"{hour}  : Hour ,{min}  :Min , {mysecends} :Sec";
+
+            }
+
+        }
+
+      
         public bool Uploaded(string MoveName, ref string GapLink)
         {
 
 
 
 
-            string AddressTxt = "http://deltagap.ir/DeltaMoviesBot/lastFile.txt";
+            string AddressTxt = "http://bitiy.ir/DeltaMoviesBot/lastFile.txt";
             string TextFile;
             string[] DATA;
             string LINK = "";
@@ -604,30 +666,44 @@ namespace WtoG
             {
                 try
                 {
+
+                    if (UploadedReqs > 180)
+                    {
+                        webControl2.WebView.Reload();
+
+                        UploadedReqs = 0;
+                        wait(5000);
+
+                        wait(1000);
+                        webControl2.WebView.SendMouseEvent(MouseEventType.Click, new MouseEventArgs(MouseButtons.Left, 1, 19, 173, 0));
+
+
+                        return false;
+                    }
+                    wait(5000);
                     TextFile = Get(AddressTxt);
+
                     DATA = TextFile.Split(',');
                     LINK = DATA[0];
                     NAME = DATA[1];
                     SIZEmb = DATA[2];
+                    UploadedReqs++;
                 }
                 catch (Exception)
                 {
+                  //  UploadedReqs++;
 
-                  
                 }
     
                 //   MessageBox.Show(LINK);
-                wait(5000);
+              
 
             }
-
+            UploadedReqs = 0;
             GapLink = LINK;
 
             return true;
 
-
-
-            return false;
         }
         public static string Get(string uri)
         {
@@ -645,7 +721,7 @@ namespace WtoG
                 request.ServicePoint.MaxIdleTime = 50000;
                 */
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                using (Stream stream = response.GetResponseStream())
+                using (System.IO.Stream stream = response.GetResponseStream())
                 using (StreamReader reader = new StreamReader(stream))
                 {
                     string webText = reader.ReadToEnd();
@@ -666,7 +742,34 @@ namespace WtoG
             
         }
 
+        private void button5_Click(object sender, EventArgs e)
+        {
+            webControl2.WebView.Reload();
+        }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Charset charset = new Charset();
+            charset.FromCharset = "UTF-8";
+            charset.ToCharset = "UTF-8-BOM";
+            bool a = charset.ConvertFile(@"C:\SubtitleBotPlugins\AllSubtitle\AFairyTaleAfterAll2022.eng.DeltaMovieS.srt",
+                @"C:\SubtitleBotPlugins\AllSubtitle\AFairyTaleAfterAll2022.eng.DeltaMovieS.srt");
+            MessageBox.Show(a.ToString());
+        }
 
+        private void progressBar1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FtpPerOne_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

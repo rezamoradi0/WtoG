@@ -15,16 +15,29 @@ namespace WtoG
   public  static class UploadManager
     {
        public static Form1 MyForm = null;
-        static string UploadPathUrl = "ftp://asiatech.parsaspace.com:21/";
-      public  static string UploadPathHttp = "http://asiatech.parsaspace.com/";
-        static string FtpUser = "deltadl.parsaspace.com";
-        static string FtpPass = "xxVJnHfhaMKDy2b";
-        public static string FakeDLServer="http://deltadl.ir";
+        public static ProgressBar MyProgress = null;
+        public static Label FTPPerOne = null;
+        // این ادرس اف تی پی میباشد
+        static string UploadPathUrl = "ftp://localhost:21/";
+        // لینک زیر برای آدرس دهی در دیتابیس استفاده میشود
+     
+        public  static string UploadPathHttp = "http:/localhost/";
+        static string FtpUser = "user";
+        static string FtpPass = "12345678";
+        /*   
+         *    // لینک زیر برای آدرس دهی در دیتابیس استفاده میشود
+        *public  static string UploadPathHttp = "http://deltadl.parsaspace.com/";
+         *static string FtpUser = "deltadl.parsaspace.com";
+          static string FtpPass = "xxVJnHfhaMKDy2b";
+        */
+        public static string FakeDLServer="http://bitIy.ir";
         public static bool CreateUploadBatch(this List<MovieFile> Movies) {
             foreach (var Movie in Movies)
             {
                
-                string a ="Uploaded : " + Movie.CreateUpload(); 
+                string a ="Uploaded : " + Movie.CreateUpload();
+
+                Movie._InsertMovieNoBatch();
             }
         return true;
         }
@@ -32,7 +45,8 @@ namespace WtoG
             if (file.GetFileType()== "Movie")
             {
              string MovieuploadPath=  CreateMoviePath(file);
-                string M = UploadFile(file,MovieFile.MovieFolder + file.MovieName, UploadPathUrl+MovieuploadPath + file.MovieName);
+
+                string M = UploadFile(file,MovieFile.MovieFolder + file.MovieName, UploadPathUrl+MovieuploadPath + file.MovieOutPathMkv.Remove(0,file.MovieOutPathMkv.LastIndexOf("\\")+1));
         
               ///  Console.WriteLine( M);
 
@@ -153,54 +167,85 @@ namespace WtoG
             //    MessageBox.Show(FileNameFull);
 
             //   MyForm.UploadFile(filePath, file.GetFileName());
-          //  MessageBox.Show(file.MovieOutPathMkv);
-          //  Clipboard.SetText(file.MovieOutPathMkv);
-           // MessageBox.Show(FileNameFull);
-        //    Clipboard.SetText(FileNameFull);
-            MyForm.UploadFile(file.MovieOutPathMkv, FileNameFull);
+            //  MessageBox.Show(file.MovieOutPathMkv);
+            //  Clipboard.SetText(file.MovieOutPathMkv);
+            // MessageBox.Show(FileNameFull);
+            //    Clipboard.SetText(FileNameFull);
+
+            //   MyForm.UploadFile(file.MovieOutPathMkv, FileNameFull);
+
+
+
+            //GapUploader 
+            // لینک گپ برابر با لینک هاستینگ قرار داده میشود
+            // تا فیک لینک ایجاد شود
             string _GAPLINK = "";
-            MyForm.Uploaded(FileNameFull, ref _GAPLINK);
 
-
-          //  MessageBox.Show(FileNameFull+"Test");
+            /// آپلود گپ به خوبی کار نمیکنه و در مواقعی فایل 100 درصد
+            /// اپلود میشود اما ارسال نمیشود و ربات به حالت توقف در می آید
+            /// 
             /*
+            bool UPLOADEDWeb = false;
+            while (!UPLOADEDWeb)
+            {
+
+
+                MyForm.UploadFile(file.MovieOutPathMkv, FileNameFull);
+                UPLOADEDWeb = MyForm.Uploaded(FileNameFull, ref _GAPLINK);
+                if (!UPLOADEDWeb)
+                {
+                    MyForm.PublicPath = "";
+                }
+              
+            }
+            */
+            //  MessageBox.Show(FileNameFull+"Test");
+            // FTP Uploader
+
+           string a= file.MovieOutPathMkv;
+            file.MovieUploadPath = UploadPath.Replace(UploadPathUrl, UploadPathHttp);
+            string TueUploadPATH = file.MovieUploadPath.Remove(file.MovieUploadPath.LastIndexOf('/') + 1)  +file.MovieOutPathMkv.Remove(0, file.MovieOutPathMkv.LastIndexOf('\\') + 1);
+            file.MovieUploadPath = TueUploadPATH;
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(UploadPath);
             request.Credentials = new NetworkCredential(FtpUser, FtpPass);
 
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
-            using (Stream fileStream = File.OpenRead(filePath))
+            using (Stream fileStream = File.OpenRead(file.MovieOutPathMkv))
             using (Stream ftpStream = request.GetRequestStream())
             {
-             
+
                 byte[] buffer = new byte[10240];
                 int read;
                 string temp = "";
                 while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     ftpStream.Write(buffer, 0, read);
-                    float uploadPercent = (fileStream.Position*100) / fileStream.Length;
+                    float uploadPercent = (fileStream.Position * 100) / fileStream.Length;
                     string Progress = uploadPercent.ToString();
-                   
-                    if ( uploadPercent%10==0)
+               
+                   MyProgress.Value = Convert.ToInt32(uploadPercent);
+                   FTPPerOne.Text= Convert.ToInt32(uploadPercent).ToString()+"%";
+                    if (uploadPercent % 10 == 0)
                     {
-                       
-                        if (temp!=Progress)
+
+                        if (temp != Progress)
                         {
 
                             ///Console.Clear();    
                             ///Console.WriteLine("Uploaded : %" +Progress);
                             temp = Progress;
+
                         }
-                       
-                        
+
+
                     }
-                  
+
                 }
                 file.MovieUploadPath = UploadPath.Replace(UploadPathUrl, UploadPathHttp);
             }
-            */
-            file.MovieUploadPath = UploadPath.Replace(UploadPathUrl, UploadPathHttp);
+            _GAPLINK = file.MovieUploadPath;
+
             file.GAPLINK = _GAPLINK;
             file.FakeLink= RidirectGap(file);
             return filePath;

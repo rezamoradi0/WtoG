@@ -49,6 +49,7 @@ namespace MediaInfo
         static string ReplaceName(string name) {
 
             string MovieName = name;
+
             MovieName = MovieName.Replace("[OkMovie]", "-DeltaMovieS");
             MovieName = MovieName.Replace("[OkMovie.xyz]", "-DeltaMovieS");
             MovieName = MovieName.Replace("OkMovie.xyz", "DeltaMovieS");
@@ -121,6 +122,13 @@ namespace MediaInfo
             MovieName = MovieName.Replace(".mkv", ".DeltaMovieS.mkv");
             MovieName = MovieName.Replace(".-.", ".");
             MovieName = MovieName.Replace("-.", "-");
+            MovieName = MovieName.Replace("ZarFilm", "");
+            MovieName = MovieName.Replace("zarFilm", "");
+            MovieName = MovieName.Replace("Zarfilm", "");
+            MovieName = MovieName.Replace("Zar-Film", "");
+            MovieName = MovieName.Replace("zar-film", "");
+            MovieName = MovieName.Replace("ZarFilm", "");
+            MovieName = MovieName.Replace("ZF", "");
 
             return MovieName;
 

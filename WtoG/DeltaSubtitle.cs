@@ -6,23 +6,35 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
 using Chilkat;
-
+using System.Threading;
+using System.Windows.Forms;
 
 namespace MediaInfo
 {
     internal class DeltaSubtitle
     {
-
+       
+        public static int result =0;
         const string DeltaSubPath = @"C:\SubtitleBotPlugins\DeltaSub.srt";
 
         public  bool SubtitleDeltaBatch(List<MovieFile> Movies)
         {
+
+            int movieCount = Movies.Count;
             foreach (var Movie in Movies)
             {
                
-               string result= Subtitle(Movie.GetBestSubtitle());
-                
+             Thread SubtitleThread = new Thread(() =>
+                {
+                   Subtitle(Movie.GetBestSubtitle());
+                });
+                SubtitleThread.Start();
+                // string result= Subtitle(Movie.GetBestSubtitle());
             }
+            while (result!= movieCount) {
+                Thread.Sleep(2000);
+            }
+            result = 0;
             return true;
         }
 
@@ -51,6 +63,7 @@ namespace MediaInfo
 
             File.WriteAllLines(save_path, Lines);
             UTF8TOBOM(save_path);
+            result++;
             return "Finshed";
 
         }

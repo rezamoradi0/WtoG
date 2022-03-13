@@ -8,11 +8,20 @@ using System.Net;
 using System.IO;
 using System.Diagnostics;
 using WtoG;
+using System.Windows.Forms;
 namespace MediaInfo
 {
     public static class DownloadManager
     {
-
+        //UI
+        public static Label AddedLinksLabel = null;
+        public static Label ThisQueueCount = null;
+        public static Label QueueCountLabel = null;
+        public static ProgressBar AllLinksProgress = null;
+        public static ProgressBar ThisQueueProgress = null;
+   
+        
+        
         public static int QueuCount = 5;
        public static bool InProgress = false;
         public static string IDMPath = @"C:\Program Files (x86)\Internet Download Manager\";
@@ -71,6 +80,7 @@ namespace MediaInfo
           
             int i = 0;
             int allLinkNum = AllLink.Count;
+
             while (AllLink.Count>0)
             {
                
@@ -89,7 +99,10 @@ namespace MediaInfo
                     AllLink.RemoveAt(0);
                     UploadManager.MyForm.wait(3000);
                     //  Task.Delay(3000);
-                    i++;
+                    i++; 
+                    ThisQueueCount.Text = i.ToString();
+                    ThisQueueProgress.Value = i ;
+                 
                 }
                 else {
                     string WrongUrl=AllLink[0].Url;
@@ -101,10 +114,11 @@ namespace MediaInfo
                     AllLink.RemoveAt(0);
                 }
 
+
                 if (i== QueuCount|| i== allLinkNum)
                 {
                     
-                  
+                    
                     StartQueu();
                     InProgress = true;
                     while (Idm_open())
@@ -121,13 +135,27 @@ namespace MediaInfo
                         
                         //Console.WriteLine("In Progress");
                     }
-
+                    if (i==QueuCount)
+                    {
+                        AllLinksProgress.Value += QueuCount;
+                        QueueCountLabel.Text = QueuCount.ToString();
+                        AddedLinksLabel.Text = (Convert.ToInt32(AddedLinksLabel.Text) + QueuCount).ToString();
+                        ThisQueueProgress.Maximum = QueuCount;
+                    }
+                    if (i == allLinkNum)
+                    {
+                        AllLinksProgress.Value += i;
+                        QueueCountLabel.Text = i.ToString();
+                        AddedLinksLabel.Text = (Convert.ToInt32(AddedLinksLabel.Text) + i).ToString();
+                        ThisQueueProgress.Maximum = i;
+                    }
                     allLinkNum -= QueuCount;
                       i = 0;
                 }
                // Console.WriteLine(i);
                // i++;
             }
+
             return true;
 
         }
@@ -140,7 +168,7 @@ namespace MediaInfo
             string MovieName=MovieParts[MovieParts.Length-1].Replace("%28", ".").Replace("%29", ".").Replace("%20", ".").Replace("[", ".").Replace("]", ".");
             MovieName = MovieName.Replace("..", ".");
 
-               AddLinkCommand = AddLinkCommand.Replace("FileName", MovieName);
+            AddLinkCommand = AddLinkCommand.Replace("FileName", MovieName);
             AddLinkCommand= AddLinkCommand.Replace("FileLink", URL);
            // Console.WriteLine(AddLinkCommand);
           
@@ -186,7 +214,10 @@ namespace MediaInfo
 
         public static int GetFileSize(string _url)
         {
-
+            if (_url.ToLower().Contains("bitch"))
+            {
+                return 1500;
+            }
             try
             {
                 // return 1;

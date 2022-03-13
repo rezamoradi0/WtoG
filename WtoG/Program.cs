@@ -38,7 +38,9 @@ namespace WtoG
 
             files.MoveSubtitlesBatch();
             files.CreateUploadBatch();
-            files._InsertMovieBatch();
+          
+            
+       //     files._InsertMovieBatch();
            // Console.WriteLine("Finished");
 
             //  files.InsertMovieBatch();

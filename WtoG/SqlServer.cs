@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
+using System.IO;
 using WtoG;
 using System.Net;
 namespace MediaInfo
@@ -29,6 +30,53 @@ namespace MediaInfo
                 }
 
             }
+            return true;
+        }
+        //translate
+        public static string Get(string uri)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            request.UseDefaultCredentials = true;
+            request.PreAuthenticate = true;
+            request.Credentials = CredentialCache.DefaultCredentials;
+            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+        public static string Translate(string EnText)
+        {
+            string WebAdd = "http://bitiy.ir/Translator/t.php?Req=" + EnText;
+            string TranslatedText = Get(WebAdd);
+            return TranslatedText;
+
+
+        }
+
+
+        //translate
+
+        public static bool _InsertMovieNoBatch(this MovieFile Movie)
+        {
+           
+                Movie.IMDBID = Movie.GetIMDB_();
+                GetOMDB.CallApi(Movie);
+                Movie._InsertMovie();
+                if (Movie.GetFileType() == "Movie")
+                {
+                    Movie._InsertMoviePro();
+                }
+                else if (Movie.GetFileType() == "Serial")
+                {
+                    Movie._InsertSeriePro();
+                }
+
+            
             return true;
         }
         public static void _InsertSeriePro(this MovieFile movieFile)
@@ -61,7 +109,9 @@ namespace MediaInfo
             insertCmd = insertCmd.Replace("#Director", _InsertStar(movie.IMDBInfo.Director));
             insertCmd = insertCmd.Replace("#Genre", _InsertGenre(movie.IMDBInfo.Genre.Replace("-", " ")));
             insertCmd = insertCmd.Replace("#Plot", movie.IMDBInfo.Plot.Replace("'", "").Replace(",", " "));
-            insertCmd = insertCmd.Replace("#FaPlot", movie.IMDBInfo.Plot.Replace("'", "").Replace(",", " "));
+            string FarsiPlot = Translate(movie.IMDBInfo.Plot.Replace("'", "").Replace(",", " "));
+            //   insertCmd = insertCmd.Replace("#FaPlot", movie.IMDBInfo.Plot.Replace("'", "").Replace(",", " "));
+            insertCmd = insertCmd.Replace("#FaPlot", FarsiPlot);
 
             insertCmd = insertCmd.Replace("#SEASONS", _InsertEpisode(movie.MovieUploadPath, movie));
             insertCmd = insertCmd.Replace("#Languge", _InsertLanguage(movie.IMDBInfo.Language));
@@ -493,7 +543,8 @@ namespace MediaInfo
             insertCmd = insertCmd.Replace("#Director", _InsertStar(movie.IMDBInfo.Director));
             insertCmd = insertCmd.Replace("#Genre", _InsertGenre(movie.IMDBInfo.Genre.Replace("-", " ")));
             insertCmd = insertCmd.Replace("#Plot", movie.IMDBInfo.Plot.Replace("'", "").Replace(",", " "));
-            insertCmd = insertCmd.Replace("#FaPlot", movie.IMDBInfo.Plot.Replace("'", "").Replace(","," "));
+            string FarsiPlot = Translate(movie.IMDBInfo.Plot.Replace("'", "").Replace(",", " "));
+            insertCmd = insertCmd.Replace("#FaPlot", FarsiPlot);
             insertCmd = insertCmd.Replace("#Links", _InsertLink(movie.MovieUploadPath, movie));
             insertCmd = insertCmd.Replace("#Languge", _InsertLanguage(movie.IMDBInfo.Language));
             insertCmd = insertCmd.Replace("#Country", _InsertCountrys(movie.IMDBInfo.Country));
